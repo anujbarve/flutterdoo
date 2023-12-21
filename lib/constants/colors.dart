@@ -1,9 +1,9 @@
 import 'package:hexcolor/hexcolor.dart';
 
 class AppColors{
-  static HexColor bgColor = HexColor("#0A2239");
-  static HexColor lightColor = HexColor("#53A2BE");
-  static HexColor darkColor = HexColor("#1D84B5");
-  static HexColor bg2Color = HexColor("#132E32");
-  static HexColor midColor = HexColor("#176087");
+  static HexColor jade = HexColor("#0DAB76");
+  static HexColor pigmentGreen = HexColor("#139A43");
+  static HexColor darthmouthGreen = HexColor("#0B5D1E");
+  static HexColor deepGreen = HexColor("#053B06");
+  static HexColor Black = HexColor("#000000");
 }

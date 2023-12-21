@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterdoo/screens/home_screen.dart';
 import 'package:flutterdoo/screens/register_screen.dart';
+import 'package:flutterdoo/services/firebase_service.dart';
 import 'package:flutterdoo/widgets/appButton.dart';
 import 'package:flutterdoo/widgets/textfield.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,6 +19,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
+  FirebaseAuthService _authService = new FirebaseAuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: GoogleFonts.lato(
                         fontWeight: FontWeight.bold,
                         fontSize: 32,
-                        color: AppColors.bg2Color),
+                        color: AppColors.Black),
                   ),
                 ),
                 const SizedBox(
@@ -51,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: GoogleFonts.lato(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
-                      color: AppColors.bgColor),
+                      color: AppColors.Black),
                 ),
                 const SizedBox(
                   height: 30,
@@ -67,9 +71,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 10,
                 ),
                 AppButton(
-                  color: AppColors.bg2Color,
+                  color: AppColors.jade,
                   buttonText: 'Sign In',
-                  func: () {},
+                  func: () {
+                    LoginUser();
+                  },
                 ),
                 const SizedBox(
                   height: 10,
@@ -83,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   func: () {
                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
                   },
-                  color: AppColors.midColor,
+                  color: AppColors.pigmentGreen,
                 )
               ],
             ),
@@ -91,5 +97,23 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  void LoginUser() async {
+    String email = emailController.text;
+    String password = passwordController.text;
+
+    User? user = await _authService.signInUserWithEmailAndPassword(email, password);
+
+    if(user!=null)
+    {
+      // TODO Add success and error messages
+      print("User Registered Successfully Created");
+      Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    }
+    else
+    {
+      print("Some Error Happened");
+    }
   }
 }

@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterdoo/screens/home_screen.dart';
 import 'package:flutterdoo/screens/login_screen.dart';
+import 'package:flutterdoo/services/firebase_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../constants/colors.dart';
@@ -15,9 +18,11 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
 
+  final FirebaseAuthService _authService = FirebaseAuthService();
+
+  TextEditingController usernameController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
-  TextEditingController confirmPasswordController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +47,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     style: GoogleFonts.lato(
                         fontWeight: FontWeight.bold,
                         fontSize: 32,
-                        color: AppColors.bg2Color
+                        color: AppColors.Black
                     ),
                   ),
                 ),
@@ -54,13 +59,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   style: GoogleFonts.lato(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
-                      color: AppColors.bgColor
+                      color: AppColors.Black
                   ),
                 ),
                 const SizedBox(
                   height: 30,
                 ),
-                AppTextField("Email",emailController,false,TextInputType.emailAddress),
+                AppTextField("Username",usernameController,false,TextInputType.text),
+                const SizedBox(
+                  height: 10,
+                ),
+                AppTextField("Email", emailController,false,TextInputType.emailAddress),
                 const SizedBox(
                   height: 10,
                 ),
@@ -68,11 +77,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(
                   height: 10,
                 ),
-                AppTextField("Confirm Password", confirmPasswordController,true,TextInputType.text),
-                const SizedBox(
-                  height: 10,
-                ),
-                AppButton(buttonText: 'Register', func: () {  }, color: AppColors.bg2Color,),
+                AppButton(buttonText: 'Register', func: () {
+                  RegisterUser();
+                }, color: AppColors.jade,),
                 const SizedBox(
                   height: 10,
                 ),
@@ -85,7 +92,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   func: () {
                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
                   },
-                  color: AppColors.midColor,
+                  color: AppColors.pigmentGreen,
                 )
               ],
             ),
@@ -93,5 +100,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       ),
     );
+  }
+
+  void RegisterUser() async {
+    String username = usernameController.text;
+    String email = emailController.text;
+    String password = passwordController.text;
+
+    User? user = await _authService.signUpUserWithEmailAndPassword(email, password);
+
+    if(user!=null)
+      {
+        // TODO Add success and error messages
+        print("User Registered Successfully Created");
+        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+      }
+    else
+      {
+        print("Some Error Happened");
+      }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    usernameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
   }
 }

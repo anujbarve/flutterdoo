@@ -28,14 +28,14 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg2Color,
+      backgroundColor: AppColors.Black,
       body: Center(
         child: Text(
           "FlutterDoo",
           style: GoogleFonts.lato(
             fontWeight: FontWeight.bold,
             fontSize: 32,
-            color: AppColors.lightColor
+            color: AppColors.jade
           ),
         ),
       ),
