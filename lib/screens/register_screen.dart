@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterdoo/providers/auth_provider.dart';
 import 'package:flutterdoo/screens/home_screen.dart';
 import 'package:flutterdoo/screens/login_screen.dart';
 import 'package:flutterdoo/services/firebase_service.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../constants/colors.dart';
 import '../widgets/appButton.dart';
@@ -107,18 +109,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
     String email = emailController.text;
     String password = passwordController.text;
 
-    User? user = await _authService.signUpUserWithEmailAndPassword(email, password);
+    try{
+      var user = await Provider.of<AuthenticationProvider>(context,listen: false).register(email: email, password: password);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      showDialog(context: context, builder: (context) => _buildPopupDialog(context,"Registration Successful"));
 
-    if(user!=null)
+    }catch(e){
+      if(e is FirebaseAuthException)
       {
-        // TODO Add success and error messages
-        print("User Registered Successfully Created");
-        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+        showDialog(context: context, builder: (context) => _buildPopupDialog(context,e.message!));
       }
-    else
+      else
       {
-        print("Some Error Happened");
+        showDialog(context: context, builder: (context) => _buildPopupDialog(context,e.toString()));
       }
+
+    }
+  }
+
+  Widget _buildPopupDialog(BuildContext context,String error) {
+    return new AlertDialog(
+      title: const Text('Notice'),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(error),
+        ],
+      ),
+      actions: <Widget>[
+        new ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Close'),
+        ),
+      ],
+    );
   }
 
   @override

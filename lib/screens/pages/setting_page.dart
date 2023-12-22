@@ -18,10 +18,14 @@ class _SettingPageState extends State<SettingPage> {
     return SafeArea(
       child: Column(
           children: [
-            AppButton(buttonText: "Log Out", func: () {
-              _authService.signOut();
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
-            } , color: AppColors.jade)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: AppButton(buttonText: "Log Out", func: () {
+                _authService.signOut();
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+              } , color: AppColors.jade),
+            ),
+
           ],
       ),
     );

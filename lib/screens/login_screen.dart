@@ -6,6 +6,8 @@ import 'package:flutterdoo/services/firebase_service.dart';
 import 'package:flutterdoo/widgets/appButton.dart';
 import 'package:flutterdoo/widgets/textfield.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 
 import '../constants/colors.dart';
 
@@ -103,17 +105,42 @@ class _LoginScreenState extends State<LoginScreen> {
     String email = emailController.text;
     String password = passwordController.text;
 
-    User? user = await _authService.signInUserWithEmailAndPassword(email, password);
+    try{
+      var user = await Provider.of<AuthenticationProvider>(context,listen: false).login(email: email, password: password);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      showDialog(context: context, builder: (context) => _buildPopupDialog(context,"Login Successful"));
 
-    if(user!=null)
-    {
-      // TODO Add success and error messages
-      print("User Registered Successfully Created");
-      Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    }catch(e){
+      if(e is FirebaseAuthException)
+        {
+          showDialog(context: context, builder: (context) => _buildPopupDialog(context,e.message!));
+        }
+      else
+        {
+          showDialog(context: context, builder: (context) => _buildPopupDialog(context,e.toString()));
+        }
+
     }
-    else
-    {
-      print("Some Error Happened");
-    }
+  }
+
+  Widget _buildPopupDialog(BuildContext context,String error) {
+    return new AlertDialog(
+      title: const Text('Notice'),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(error),
+        ],
+      ),
+      actions: <Widget>[
+        new ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Close'),
+        ),
+      ],
+    );
   }
 }

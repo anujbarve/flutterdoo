@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/shared_service.dart';
 import './pages/home_page.dart';
 import './pages/setting_page.dart';
 import './pages/undefined.dart';
@@ -15,8 +16,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    print(SharedPreferenceService.isLogin);
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("FlutterDoo"),
+      ),
       bottomNavigationBar: NavigationBar(
+        elevation: 5,
         selectedIndex: currentPageIndex,
         onDestinationSelected: (int index) {
           setState(() {
@@ -45,6 +53,17 @@ class _HomeScreenState extends State<HomeScreen> {
         UnDefinedPage(),
         SettingPage(),
       ][currentPageIndex],
+      floatingActionButton: FloatingActionButton.extended(
+        elevation: 5,
+          onPressed: () {},
+          label: Row(
+            children: [
+              Icon(Icons.add),
+              SizedBox(width: 12,),
+              Text("New Task")
+            ],
+          )
+      ),
     );
   }
 }
