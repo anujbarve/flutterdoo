@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutterdoo/models/task.dart';
+import 'package:flutterdoo/services/sql_service.dart';
 import '../services/shared_service.dart';
 import './pages/home_page.dart';
 import './pages/setting_page.dart';
-import './pages/undefined.dart';
+import './pages/completed.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
     print(SharedPreferenceService.isLogin);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.greenAccent.withOpacity(0.2),
         centerTitle: true,
         title: Text("FlutterDoo"),
       ),
@@ -35,11 +38,12 @@ class _HomeScreenState extends State<HomeScreen> {
           NavigationDestination(
             selectedIcon: Icon(Icons.home),
             icon: Icon(Icons.home_outlined),
-            label: "Home",
+            label: "All Tasks",
           ),
           NavigationDestination(
-            icon: Icon(Icons.dnd_forwardslash),
-            label: "Undefined",
+            selectedIcon: Icon(Icons.check_box),
+            icon: Icon(Icons.check_box_outlined),
+            label: "Completed Tasks",
           ),
           NavigationDestination(
             selectedIcon: Icon(Icons.settings),
@@ -50,12 +54,14 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: [
         HomePage(),
-        UnDefinedPage(),
+        Completed(),
         SettingPage(),
       ][currentPageIndex],
       floatingActionButton: FloatingActionButton.extended(
         elevation: 5,
-          onPressed: () {},
+          onPressed: () {
+
+          },
           label: Row(
             children: [
               Icon(Icons.add),
