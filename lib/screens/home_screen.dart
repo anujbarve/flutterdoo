@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutterdoo/models/task.dart';
+import 'package:flutterdoo/providers/task_provider.dart';
+import 'package:flutterdoo/screens/new_screen.dart';
 import 'package:flutterdoo/services/sql_service.dart';
+import 'package:provider/provider.dart';
 import '../services/shared_service.dart';
 import './pages/home_page.dart';
 import './pages/setting_page.dart';
@@ -59,8 +62,9 @@ class _HomeScreenState extends State<HomeScreen> {
       ][currentPageIndex],
       floatingActionButton: FloatingActionButton.extended(
         elevation: 5,
-          onPressed: () {
-
+          onPressed: () async {
+              // await Provider.of<TaskProvider>(context,listen: false).addTasks();
+            Navigator.push(context, MaterialPageRoute(builder: (context) => NewTaskScreen()));
           },
           label: Row(
             children: [

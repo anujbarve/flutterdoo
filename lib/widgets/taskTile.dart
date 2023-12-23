@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterdoo/models/task.dart';
+import 'package:intl/intl.dart';
 
 class TaskTile extends StatefulWidget {
   final Task task;
@@ -13,6 +14,11 @@ class TaskTile extends StatefulWidget {
 class _TaskTileState extends State<TaskTile> {
   @override
   Widget build(BuildContext context) {
+
+    DateTime dueDate = DateTime.fromMillisecondsSinceEpoch(widget.task.dueDate);
+    String dueDateString = DateFormat("dd-MM-yyyy").format(dueDate);
+
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -51,7 +57,7 @@ class _TaskTileState extends State<TaskTile> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(widget.task.dueDate,style: TextStyle(color: Colors.white),),
+                  child: Text(dueDateString,style: TextStyle(color: Colors.white),),
                 ),
               ),
             ),
@@ -82,7 +88,7 @@ class _TaskTileState extends State<TaskTile> {
                   borderRadius: BorderRadius.only(bottomRight: Radius.circular(20),topLeft: Radius.circular(20)),
                   color: Colors.black.withOpacity(0.2)
                 ),
-                child: widget.task.isCompleted == 0 ? Icon(Icons.check_box_outlined,color: Colors.white,) : Icon(Icons.check_box_outline_blank_outlined,color: Colors.white,),
+                child: widget.task.isCompleted == 1 ? Icon(Icons.check_box,color: Colors.white,) : Icon(Icons.check_box_outline_blank_outlined,color: Colors.white,),
               ),
             ),
 

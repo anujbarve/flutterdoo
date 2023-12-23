@@ -1,10 +1,13 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterdoo/providers/task_provider.dart';
 import 'package:flutterdoo/screens/home_screen.dart';
 import 'package:flutterdoo/screens/login_screen.dart';
 import 'package:flutterdoo/services/shared_service.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/colors.dart';
@@ -21,7 +24,18 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     checkLogin();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      init();
+    });
     super.initState();
+  }
+
+  void init() async {
+    var user = FirebaseAuth.instance.currentUser?.email;
+    if(user!=null)
+      {
+        await Provider.of<TaskProvider>(context,listen: false).init(user!);
+      }
   }
 
   void checkLogin() async {

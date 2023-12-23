@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterdoo/providers/task_provider.dart';
 import 'package:flutterdoo/screens/splash_screen.dart';
 import 'package:flutterdoo/services/shared_service.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
+        ChangeNotifierProvider(create: (_) => TaskProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

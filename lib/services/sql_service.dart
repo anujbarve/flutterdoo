@@ -1,12 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutterdoo/models/task.dart';
-import 'package:sqflite/sql.dart';
+import 'package:flutterdoo/services/shared_service.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 
 class SQLService {
   static Future<void> createTables(sql.Database database) async {
     await database.execute("""CREATE TABLE tasks(
-        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        id INTEGER PRIMARY KEY,
         title TEXT,
         description TEXT,
         createdAt INTEGER,
@@ -16,15 +17,34 @@ class SQLService {
     )""");
   }
 
-  static Future<sql.Database> db() async {
-    return sql.openDatabase('tasks.db', version: 1,
-        onCreate: (sql.Database database, int version) async {
-      await createTables(database);
-    });
+  static Future<void> initializeDatabase(String user) async {
+    final databasePath = await sql.getDatabasesPath();
+    final databasePathWithUser = '$databasePath/$user.db';
+
+    // Check if the database file already exists
+    bool databaseExists = await sql.databaseExists(databasePathWithUser);
+
+    if (!databaseExists) {
+      // If the database file doesn't exist, create it and tables
+      sql.Database database = await sql.openDatabase(
+        databasePathWithUser,
+        version: 1,
+        onCreate: (sql.Database db, int version) async {
+          await createTables(db);
+        },
+      );
+      await database.close();
+    }
   }
 
-  static Future<int> createTask(Task task) async {
-    final db = await SQLService.db();
+  static Future<sql.Database> db(String user) async {
+    print(user);
+
+    await initializeDatabase(user);
+
+    return sql.openDatabase('$user.db', version: 1);
+  }
+  static Future<int> createTask(Task task,sql.Database db) async {
     final data = task.toJson();
     final id = await db.insert(
       "tasks",
@@ -34,34 +54,38 @@ class SQLService {
     return id;
   }
 
-  static Future<List<Map<String,dynamic>>> getTasks() async {
-    final db = await SQLService.db();
+  static Future<List<Map<String,dynamic>>> getTasks(sql.Database db) async {
     return db.query('tasks',orderBy: "id");
   }
 
-  static Future<List<Map<String,dynamic>>> getOneTask(int id) async {
-    final db = await SQLService.db();
+  static Future<List<Map<String,dynamic>>> getOneTask(int id,sql.Database db) async {
     return db.query('tasks',where: "id = ?",whereArgs: [id],limit: 1);
   }
 
-  static Future<int> updateTask(Task task,int id) async
+  static Future<int> updateTask(Task task,int id,sql.Database db) async
   {
-    final db = await SQLService.db();
     final data = {
-    'createdAt' : DateTime.now().toIso8601String(),
     'title' : task.title,
     'description' : task.description,
     'dueDate' : task.dueDate,
     'priority' : task.priority,
-    'isCompleted' : 0,
+    'isCompleted' : task.isCompleted,
     };
 
     final result = await db.update('tasks', data,where: "id = ?",whereArgs: [id]);
     return result;
   }
 
-  static void deleteTask(Task task,int id) async {
-    final db = await SQLService.db();
+  static Future<int> completeTask(int id,sql.Database db) async
+  {
+    final data = {
+      'isCompleted' : 1,
+    };
+    final result = await db.update('tasks', data,where: "id = ?",whereArgs: [id]);
+    return result;
+  }
+
+  static Future<void> deleteTask(int id,sql.Database db) async {
     try{
       await db.delete("tasks",where: "id = ?",whereArgs: [id]);
     }catch(err)
