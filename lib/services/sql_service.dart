@@ -17,33 +17,14 @@ class SQLService {
     )""");
   }
 
-  static Future<void> initializeDatabase(String user) async {
-    final databasePath = await sql.getDatabasesPath();
-    final databasePathWithUser = '$databasePath/$user.db';
-
-    // Check if the database file already exists
-    bool databaseExists = await sql.databaseExists(databasePathWithUser);
-
-    if (!databaseExists) {
-      // If the database file doesn't exist, create it and tables
-      sql.Database database = await sql.openDatabase(
-        databasePathWithUser,
-        version: 1,
-        onCreate: (sql.Database db, int version) async {
-          await createTables(db);
-        },
-      );
-      await database.close();
-    }
-  }
-
   static Future<sql.Database> db(String user) async {
     print(user);
-
-    await initializeDatabase(user);
-
-    return sql.openDatabase('$user.db', version: 1);
+    return sql.openDatabase('${user}.db', version: 1,
+        onCreate: (sql.Database database, int version) async {
+      await createTables(database);
+    });
   }
+
   static Future<int> createTask(Task task,sql.Database db) async {
     final data = task.toJson();
     final id = await db.insert(
