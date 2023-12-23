@@ -6,9 +6,9 @@ FlutterDoo is a Flutter mobile application that helps you manage your tasks effi
 
 | Feature             | Description                           | GIF                                          |
 |---------------------|---------------------------------------|----------------------------------------------|
-| User Authentication | Firebase-based user authentication.   | ![User Authentication GIF](path/to/user_auth.gif) |
-| Task Management     | Efficient task creation and management. | ![Task Management GIF](path/to/task_management.gif) |
-| Local Database      | SQLite for local task storage.         | ![Local Database GIF](path/to/local_database.gif) |
+| User Authentication | Firebase-based user authentication.   | ![User Authentication GIF](https://github.com/anujbarve/flutterdoo/blob/master/assets/1.gif) |
+| Task Management     | Efficient task creation and management. | ![Task Management GIF](https://github.com/anujbarve/flutterdoo/blob/master/assets/2.gif) |
+| Local Database      | SQLite for local task storage.         | ![Local Database GIF](https://github.com/anujbarve/flutterdoo/blob/master/assets/3.gif) |
 
 
 ## Features
