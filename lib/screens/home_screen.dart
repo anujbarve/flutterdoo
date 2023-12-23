@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterdoo/models/task.dart';
 import 'package:flutterdoo/providers/task_provider.dart';
@@ -18,6 +19,22 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int currentPageIndex = 0;
+
+  void initState() {
+    // TODO: implement initState
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      init();
+    });
+    super.initState();
+  }
+
+  void init() async {
+    var user = FirebaseAuth.instance.currentUser?.email;
+    if(user!=null)
+    {
+      await Provider.of<TaskProvider>(context,listen: false).init(user!);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
